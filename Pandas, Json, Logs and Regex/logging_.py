@@ -1,7 +1,7 @@
 import logging
 
 # Create and configure the logger
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Log messages using different levels
 logging.debug('This is a debug message')    # Lowest level
@@ -36,8 +36,8 @@ except Exception as e:
     logging.exception('An exception occurred')
 
 # Disable logging
-logging.disable(logging.CRITICAL)
+logging.disable(logging.ERROR)
 
 # Log a message (this won't be displayed due to logging being disabled)
-logging.info('This message won\'t be displayed')
+logging.critical('This message won\'t be displayed')
 

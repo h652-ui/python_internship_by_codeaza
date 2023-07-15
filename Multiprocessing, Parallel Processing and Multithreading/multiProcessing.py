@@ -1,26 +1,30 @@
-import requests
 from time import time
 from multiprocessing import Pool
+from impFunctions import download_image, getLinks
+import logging
 
-def download_image(url, index):
-    print(f'file_{index} Download Start')
-    img = requests.get(url)
-    with open(f'./files/file_{index}.jpg', 'wb') as file:
-            file.write(img.content)
-    print(f'file_{index} Downloaded...')
+# Set up logging
+logging.basicConfig(filename='./logs/multiProcessing.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Import necessary modules and functions
+
+# Check if the code is being executed as the main module
 if __name__ == '__main__':
-    urls = []
-    for i in range(5):
-        resp = requests.get('https://api.unsplash.com/photos/random?client_id=xYthxZUbxBvv2cS_efL71BJPyVVEcncKMeYk518argw')
-        url = resp.json()['urls']['full']
-        urls.append(url)
-
+    # Get a list of URLs using the getLinks() function
+    urls = getLinks()
+    
+    # Record the start time
     start = time()
 
+    # Create a pool of processes with a maximum of 5 processes
     with Pool(processes=5) as pool:
+        # Use starmap to apply the download_image function to each URL and index in parallel
+        # zip(urls, range(5)) creates pairs of (url, index) for each URL and its corresponding index
+        # starmap applies the download_image function to each pair of arguments in parallel
         results = pool.starmap(download_image, list(zip(urls, range(5))))
 
+    # Record the end time
     end = time()
 
+    # Calculate and print the total execution time
     print(f'Total Time : {end - start} secs')

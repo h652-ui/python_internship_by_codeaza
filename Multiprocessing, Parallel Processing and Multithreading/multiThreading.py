@@ -1,29 +1,40 @@
-import requests
 import threading
 from time import time
+from impFunctions import download_image, getLinks
+import logging
 
-def download_image(url, index):
-    print(f'file_{index} Download Start')
-    img = requests.get(url)
-    with open(f'./files/file_{index}.jpg', 'wb') as file:
-            file.write(img.content)
-    print(f'file_{index} Downloaded...')
+# Set up logging
+logging.basicConfig(filename='./logs/multiProcessing.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-urls = []
-for i in range(5):
-    resp = requests.get('https://api.unsplash.com/photos/random?client_id=xYthxZUbxBvv2cS_efL71BJPyVVEcncKMeYk518argw')
-    url = resp.json()['urls']['full']
-    urls.append(url)
+# Import necessary modules and functions
 
+# Get a list of URLs using the getLinks() function
+urls = getLinks()
+
+# Create an empty list to store the threads
 threads = []
+
+# Record the start time
 start = time()
-for i in range(5):
+
+# Iterate over the URLs and create a thread for each URL
+for i, url in enumerate(urls):
+    # Create a new thread with the target function set to download_image
+    # and arguments (url, i)
     thread = threading.Thread(target=download_image, args=(url, i))
+    
+    # Start the thread
     thread.start()
+    
+    # Add the thread to the list of threads
     threads.append(thread)
 
+# Wait for all the threads to complete
 for thread in threads:
     thread.join()
 
+# Record the end time
 end = time()
+
+# Calculate and print the total execution time
 print(f'Total Time : {end - start} secs')
